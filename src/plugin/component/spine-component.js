@@ -1,3 +1,4 @@
+/* eslint-disable */
 pc.extend(pc, function () {
     var SpineComponent = function SpineComponent (system, entity)   {
         this.on("set_atlasAsset", this.onSetAsset, this);

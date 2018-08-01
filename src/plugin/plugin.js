@@ -1,3 +1,4 @@
+/* eslint-disable */
 (function () {
     pc.Mesh.prototype.updateVertices = function (positions, normals, tangents, uvs) {
         var numVertices = positions.length / 3;

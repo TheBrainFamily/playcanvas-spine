@@ -1,3 +1,4 @@
+/* eslint-disable */
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.3
@@ -32,10 +33,11 @@
 var spine = {
 	radDeg: 180 / Math.PI,
 	degRad: Math.PI / 180,
-	Float32Array: typeof(Float32Array) === 'undefined' ? Array : Float32Array,
-	Uint32Array: typeof(Uint32Array) === 'undefined' ? Array : Uint32Array,
-	Uint16Array: typeof(Uint16Array) === 'undefined' ? Array : Uint16Array
+	Float32Array: Array,
+	Uint32Array: Array,
+	Uint16Array: Array
 };
+window.spine = spine
 spine.temp = new spine.Float32Array(2);
 
 spine.BoneData = function (name, parent) {

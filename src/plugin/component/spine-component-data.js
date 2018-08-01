@@ -1,3 +1,4 @@
+/* eslint-disable */
 pc.extend(pc, function() {
     var SpineComponentData = function () {
         // serialized

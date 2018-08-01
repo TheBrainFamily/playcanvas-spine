@@ -1,3 +1,4 @@
+/* eslint-disable */
 pc.extend(pc, function () {
     var TextureLoader = function (textureData) {
         this._textureData = textureData;
@@ -71,6 +72,7 @@ pc.extend(pc, function () {
 
     Spine.prototype = {
         destroy: function () {
+            console.log("JMOZGAWA: Spine.prototype.destroy",);
             if (this._model) {
                 this._removeFromLayers();
             }
@@ -79,7 +81,7 @@ pc.extend(pc, function () {
             this._meshInstances = [];
             this.skeleton = null;
             this.stateData = null;
-            this.state = null;
+            // this.state = null;
             this._materials = {};
             this._node = null;
         },

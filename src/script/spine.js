@@ -1,3 +1,4 @@
+import pc from 'framework/libs/playcanvas-latest'
 var Spine = pc.createScript("spine");
 
 Spine.attributes.add("atlas", {type: "asset", assetType: "text"});
@@ -9,11 +10,14 @@ Spine.attributes.add("priority", {type: "number", default: 1});
 Spine.prototype.initialize = function () {
     if (this.atlas && this.textures && this.skeleton) {
         // If all assets are present, add the spine component to the entity
+      
         this.entity.addComponent("spine", {
             atlasAsset: this.atlas.id,
             textureAssets: this.textures.map(function (a) {return a.id;}),
             skeletonAsset: this.skeleton.id
         });
+        
+        console.log("JMOZGAWA: this.entity.spine",this.entity.spine);
 
         if(this.entity.spine) {
             this.priority = this.priority ? this.priority : 0;

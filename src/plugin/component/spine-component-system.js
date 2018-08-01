@@ -1,3 +1,4 @@
+/* eslint-disable */
 pc.extend(pc, function () {
     var SpineComponentSystem = function SpineComponentSystem (app) {
         this.id = 'spine';
