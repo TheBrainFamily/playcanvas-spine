@@ -10,6 +10,7 @@ pc.extend(pc, function () {
 
         this.schema = [
             'enabled',
+            'screenSpace',
             'atlasAsset',
             'textureAssets',
             'skeletonAsset',
@@ -30,7 +31,7 @@ pc.extend(pc, function () {
 
     pc.extend(SpineComponentSystem.prototype, {
         initializeComponentData: function (component, data, properties) {
-            properties = ['enabled', 'atlasAsset', 'textureAssets', 'skeletonAsset', 'atlasData', 'textures', 'skeletonData', 'spine'];
+            properties = ['enabled', 'screenSpace', 'atlasAsset', 'textureAssets', 'skeletonAsset', 'atlasData', 'textures', 'skeletonData', 'spine'];
             SpineComponentSystem._super.initializeComponentData.call(this, component, data, properties);
         },
 

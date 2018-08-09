@@ -33,10 +33,11 @@ pc.extend(pc, function () {
     * @property {Number} priority An integer value which determines when the animation is rendered relative to other Spine animations. Lower numbers are rendered first.
     * @property {Boolean} autoUpdate Determines whether the Spine object calls skeleton.updateWorldTransform in the update loop. Default is true.
     */
-    var Spine = function (app, atlasData, skeletonData, textureData) {
+    var Spine = function (app, atlasData, skeletonData, textureData, screenSpace) {
         this._app = app;
 
         this._position = new pc.Vec3();
+        this._screenSpace = screenSpace ? screenSpace : false
 
         var atlas = new spine.Atlas(atlasData, new TextureLoader(textureData));
         var json = new spine.SkeletonJson(new spine.AtlasAttachmentLoader(atlas));
@@ -72,7 +73,6 @@ pc.extend(pc, function () {
 
     Spine.prototype = {
         destroy: function () {
-            console.log("JMOZGAWA: Spine.prototype.destroy",);
             if (this._model) {
                 this._removeFromLayers();
             }
@@ -227,7 +227,7 @@ pc.extend(pc, function () {
                         // get a unique key for the texture
                         var key = null;
                         if (texture.getSource() instanceof Image) {
-                            key = texture.getSource().getAttribute("src");
+                            key = `${slot.data.name}_${texture.getSource().getAttribute("src")}`;
                         }
 
                         // create a new material if required
@@ -235,29 +235,53 @@ pc.extend(pc, function () {
                             slot.materials[name] = this._materials[key];
                         } else {
                             slot.materials[name] = new pc.StandardMaterial();
+                            slot.materials[name].useLighting = false;
+                            slot.materials[name].useGammaTonemap = false;
+                            slot.materials[name].useFog = false;
+                            slot.materials[name].useSkybox = false;
                             slot.materials[name].shadingModel = pc.SPECULAR_BLINN;
-                            slot.materials[name].diffuse = new pc.Color(0, 0, 0);
+                            slot.materials[name].diffuse = new pc.Color(1, 1, 1);
+                            slot.materials[name].diffuseMap = texture;
                             slot.materials[name].emissiveMap = texture;
                             slot.materials[name].opacityMap = texture;
                             slot.materials[name].opacityMapChannel = "a";
-                            slot.materials[name].depthWrite = false;
+                            if(this._screenSpace) {
+                                slot.materials[name].depthWrite = false;
+                            }
                             slot.materials[name].cull = pc.CULLFACE_NONE;
-                            slot.materials[name].blendType = pc.BLEND_PREMULTIPLIED;
+
+                            if (slot.data.blendMode === spine.BlendMode.additive) {
+                              slot.materials[name].blendType = pc.BLEND_ADDITIVEALPHA
+                            } else if (slot.data.blendMode === spine.BlendMode.multiply) {
+                              slot.materials[name].blendType = pc.BLEND_PREMULTIPLIED
+                            } else if (slot.data.blendMode === spine.BlendMode.normal) {
+                              slot.materials[name].blendType = pc.BLEND_NORMAL
+                              slot.materials[name].blendSrcAlpha = pc.BLENDMODE_SRC_ALPHA;
+                              slot.materials[name].blendDstAlpha = pc.BLENDMODE_DST_ALPHA;
+                              slot.materials[name].separateAlphaBlend = true;
+                              slot.materials[name].blendEquation = pc.BLENDEQUATION_ADD;
+                              slot.materials[name].blendAlphaEquation = pc.BLENDEQUATION_ADD;
+                            } else if (slot.data.blendMode === spine.BlendMode.screen) {
+                              slot.materials[name].blendType = pc.BLEND_SCREEN
+                            }
                             slot.materials[name].update();
                             // override premultiplied chunk because images are already premultiplied
-                            slot.materials[name].chunks.outputAlphaPremulPS = pc.shaderChunks.outputAlphaPS;
+                            // slot.materials[name].chunks.outputAlphaPremulPS = pc.shaderChunks.outputAlphaPS;
 
                             if (key) {
                                 this._materials[key] = slot.materials[name];
                             }
                         }
                     }
-
                 }
             }
 
             if (slot.meshInstances[name] === undefined) {
                 slot.meshInstances[name] = new pc.MeshInstance(this._node, slot.meshes[name], slot.materials[name]);
+                if(this._screenSpace) {
+                    slot.meshInstances[name].screenSpace = true
+                    slot.meshInstances[name].receiveShadow = false
+                }
                 this._meshInstances.push(slot.meshInstances[name]);
                 this._modelChanged = true;
                 this._reordered = true;
@@ -279,7 +303,7 @@ pc.extend(pc, function () {
                 var mi = slot.meshInstances[name];
                 if (!mi) continue;
 
-                mi.drawOrder = i + (this.priority * 1000);
+                mi.drawOrder = i + this.priority * 1000;
             }
         },
 

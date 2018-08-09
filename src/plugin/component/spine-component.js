@@ -28,8 +28,7 @@ pc.extend(pc, function () {
 
                 textureData[path] = asset.resource;
             }
-
-            this.data.spine = new pc.Spine(this.system.app, this.atlasData, this.skeletonData, textureData);
+            this.data.spine = new pc.Spine(this.system.app, this.atlasData, this.skeletonData, textureData, this.data.screenSpace);
 
             this.state = this.data.spine.state;
             this.states = this.data.spine.states;
@@ -137,20 +136,20 @@ pc.extend(pc, function () {
 
         onEnable: function () {
             SpineComponent._super.onEnable.call(this);
-
-            var spine = this.data.spine;
-            if (spine && spine._model) {
-                this.system.app.scene.addModel(spine._model);
-            }
+            // this.show()
+            // var spine = this.data.spine;
+            // if (spine && spine._model) {
+            //     this.system.app.scene.addModel(spine._model);
+            // }
         },
 
         onDisable: function () {
             SpineComponent._super.onDisable.call(this);
-
-            var spine = this.data.spine;
-            if (spine && spine._model) {
-                this.system.app.scene.removeModel(spine._model);
-            }
+            this.hide()
+            // var spine = this.data.spine;
+            // if (spine && spine._model) {
+            //     this.system.app.scene.removeModel(spine._model);
+            // }
         },
 
         hide: function () {

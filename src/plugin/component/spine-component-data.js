@@ -7,6 +7,7 @@ pc.extend(pc, function() {
         this.textureAssets = [];
         this.skeletonAsset = null;
         this.speed = 1;
+        this.screenSpace = false;
 
         // non-serialized
         this.spine = null;

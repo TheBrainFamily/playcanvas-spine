@@ -1825,17 +1825,17 @@ spine.AnimationState.prototype = {
 		if (entry.onStart) entry.onStart(index);
 		if (this.onStart) this.onStart(index);
 	},
-	setAnimationByName: function (trackIndex, animationName, loop) {
+	setAnimationByName: function (trackIndex, animationName, loop, autoplay = true) {
 		var animation = this.data.skeletonData.findAnimation(animationName);
 		if (!animation) throw "Animation not found: " + animationName;
-		return this.setAnimation(trackIndex, animation, loop);
+		return this.setAnimation(trackIndex, animation, loop, autoplay);
 	},
 	/** Set the current animation. Any queued animations are cleared. */
-	setAnimation: function (trackIndex, animation, loop) {
+	setAnimation: function (trackIndex, animation, loop, autoplay) {
 		var entry = new spine.TrackEntry();
 		entry.animation = animation;
 		entry.loop = loop;
-		entry.endTime = animation.duration;
+		entry.endTime = autoplay ? animation.duration : 0;
 		this.setCurrent(trackIndex, entry);
 		return entry;
 	},
